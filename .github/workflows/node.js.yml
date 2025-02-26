@@ -1,0 +1,28 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: qrmenu
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+      
+      - name: FTP Deploy for Main Branch
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+           server:  ${{ secrets.FTP_SERVER }}
+           username: ${{ secrets.FTP_USER }}
+           password: ${{ secrets.FTP_PASS }}
+           local-dir: www/
+           server-dir: ./
+           timeout: 60000
+           exclude: config.js
+           protocol: ftps
+           port: 21
